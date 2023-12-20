@@ -11,15 +11,15 @@ import request from './request'
 // 获取游戏列表
 // 无参数，返回游戏列表数据
 
-// export function getGames () {
-//   return request({
-//     method: 'GET',
-//     url: '/api/games/list'
-//   })
-// }
 export function getGames () {
-  return request.get('/api/games')
+  return request({
+    method: 'GET',
+    url: '/api/games'
+  })
 }
+// export function getGames () {
+//   return request.get('/api/games')
+// }
 // 删除游戏
 // 参数：id
 export function deleteGame (gameId) {

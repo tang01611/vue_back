@@ -51,6 +51,24 @@
         :cell-style="{'text-align':'center'}"
         v-loading="isLoading"
         :data="newsData">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" class="demo-table-expand">
+              <el-form-item label="商品 ID">
+                <span>{{ props.row.id }}</span>
+              </el-form-item>
+              <el-form-item label="名称">
+                <span>{{ props.row.gameName }}</span>
+              </el-form-item>
+              <el-form-item label="价格">
+                <span>{{ props.row.price }}</span>
+              </el-form-item>
+              <el-form-item label="">
+                <span>{{ props.row.content }}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
         <el-table-column label="封面">
           <template slot-scope="scope">
             <el-image
@@ -62,7 +80,7 @@
         </el-table-column>
         <el-table-column prop="gameName" label="名称" />
         <el-table-column prop="price" label="价格" />
-        <el-table-column prop="content" label="介绍" />
+<!--        <el-table-column prop="content" label="介绍" />-->
         <!--        <el-table-column label="状态">-->
         <!--          <template slot-scope="scope">-->
         <!--            <el-tag :type="articleStatus[scope.row.tags[0]].type">{{ articleStatus[scope.row.status].text }}</el-tag>-->
@@ -212,5 +230,17 @@ export default {
       }
     }
   }
+}
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #409EFF;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
 }
 </style>
