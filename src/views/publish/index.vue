@@ -12,21 +12,16 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="60px">
       <el-row :gutter="20">
         <el-col :span="8">
-          <el-form-item label="标题" prop="title">
-            <el-input v-model="form.title"></el-input>
+          <el-form-item label="名称" prop="gameName">
+            <el-input v-model="form.gameName"></el-input>
           </el-form-item>
-          <el-form-item label="类别" prop="category">
-            <el-input v-model="form.category"></el-input>
+          <el-form-item label="标签" prop="tags">
+            <el-input v-model="form.tags"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="频道" prop="channel_id">
-            <el-select v-model="form.channel_id" placeholder="请选择频道">
-              <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
           <el-form-item label="价格" prop="price">
-            <el-input v-model="form.category"></el-input>
+            <el-input v-model="form.price"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -37,22 +32,22 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="封面">
-            <el-radio-group v-model="form.cover.type">
-              <el-radio :label="1">单图</el-radio>
-              <el-radio :label="3">三图</el-radio>
-              <el-radio :label="0">无图</el-radio>
-              <el-radio :label="-1">自动</el-radio>
-            </el-radio-group>
-            <template v-if="form.cover.type > 0">
-              <!-- <upload-cover v-for="(item, index) in form.cover.type" :key="index" :current-cover="form.cover.images[index]" @handleEmitUrl="handleEmitUrl($event, index)" /> -->
-              <upload-cover v-for="(item, index) in form.cover.type" :key="index" v-model="form.cover.images[index]" />
-            </template>
-          </el-form-item>
-        </el-col>
-      </el-row>
+<!--      <el-row>-->
+<!--        <el-col :span="24">-->
+<!--          <el-form-item label="封面">-->
+<!--            <el-radio-group v-model="form.cover.type">-->
+<!--              <el-radio :label="1">单图</el-radio>-->
+<!--              <el-radio :label="3">三图</el-radio>-->
+<!--              <el-radio :label="0">无图</el-radio>-->
+<!--              <el-radio :label="-1">自动</el-radio>-->
+<!--            </el-radio-group>-->
+<!--            <template v-if="form.cover.type > 0">-->
+<!--              &lt;!&ndash; <upload-cover v-for="(item, index) in form.cover.type" :key="index" :current-cover="form.cover.images[index]" @handleEmitUrl="handleEmitUrl($event, index)" /> &ndash;&gt;-->
+<!--              <upload-cover v-for="(item, index) in form.cover.type" :key="index" v-model="form.cover.images[index]" />-->
+<!--            </template>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--      </el-row>-->
       <el-row>
         <el-col :span="24">
           <el-form-item>
@@ -98,35 +93,23 @@ import {
 } from 'element-tiptap'
 // import element-tiptap 样式
 import 'element-tiptap/lib/index.css'
-import UploadCover from './components/UploadCover'
+// import UploadCover from './components/UploadCover'
 
 // import { getChannels, addArticle, getArticle, updateArticle } from 'https/article'
 import { uploadRichImage } from 'https/images'
 import { addGame, getGame, updateGame } from '@/https/game'
+import { Message } from 'element-ui'
 
 export default {
   name: 'PublishIndex',
   data () {
     return {
-      form: {
-        channel_id: null,
-        content: '',
-        cover: {
-          images: [],
-          type: 1
-        },
-        title: '',
-        category: null,
-        price: 0.0
-      },
+      form: {},
       // 添加表单验证规则
       rules: {
-        title: [
+        gameName: [
           { required: true, message: '请输入标题', trigger: 'blur' },
           { min: 5, max: 30, message: '长度在 5 到 30 个字符', trigger: 'blur' }
-        ],
-        channel_id: [
-          { required: true, message: '请选择频道', trigger: 'change' }
         ],
         content: [
           { required: true, message: '请输入内容', trigger: 'blur' }, // 防止在第一次未输入时直接提交
@@ -192,8 +175,8 @@ export default {
     }
   },
   components: {
-    'el-tiptap': ElementTiptap,
-    UploadCover
+    'el-tiptap': ElementTiptap
+    // UploadCover
   },
   created () {
     // this.loadChannels()
@@ -226,6 +209,10 @@ export default {
           // 编辑/更新文章
           updateGame(this.articleId, this.form).then(res => {
             const { status } = res
+            Message({
+              message: status,
+              type: 'success'
+            })
             if (status === 201) {
               this.baseMethod()
             }
@@ -234,6 +221,10 @@ export default {
           // 新增文章
           addGame(this.form).then(res => {
             const { status } = res
+            Message({
+              message: '发布!',
+              type: 'success'
+            })
             if (status === 201) {
               this.baseMethod()
             }
@@ -244,9 +235,14 @@ export default {
     // 编辑文章-对文章进行赋值
     editData () {
       getGame(this.articleId).then(res => {
-        const { data: { data: { channel_id: channelId, content, cover, id, title } }, status } = res
+        const { data, status } = res
         if (status === 200) {
-          this.form = Object.assign({}, { channel_id: channelId, content, cover, id: id.toString(), title })
+          // this.form = Object.assign({}, { content, cover, id: id.toString(), title, price })
+          // this.form.gameName = data.gameName
+          // this.form.tags = data.tags
+          // this.form.price = data.price
+          // this.form.content = data.content
+          this.form = data
         }
       })
     },
