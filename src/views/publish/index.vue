@@ -32,22 +32,24 @@
           </el-form-item>
         </el-col>
       </el-row>
-<!--      <el-row>-->
-<!--        <el-col :span="24">-->
-<!--          <el-form-item label="封面">-->
-<!--            <el-radio-group v-model="form.cover.type">-->
-<!--              <el-radio :label="1">单图</el-radio>-->
-<!--              <el-radio :label="3">三图</el-radio>-->
-<!--              <el-radio :label="0">无图</el-radio>-->
-<!--              <el-radio :label="-1">自动</el-radio>-->
-<!--            </el-radio-group>-->
-<!--            <template v-if="form.cover.type > 0">-->
-<!--              &lt;!&ndash; <upload-cover v-for="(item, index) in form.cover.type" :key="index" :current-cover="form.cover.images[index]" @handleEmitUrl="handleEmitUrl($event, index)" /> &ndash;&gt;-->
-<!--              <upload-cover v-for="(item, index) in form.cover.type" :key="index" v-model="form.cover.images[index]" />-->
-<!--            </template>-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
-<!--      </el-row>-->
+      <el-row>
+        <el-col :span="24">
+          <el-form-item>
+            <el-upload
+                :action="picAction"
+                :limit="10"
+                list-type="picture-card"
+                accept=".png, .jpg"
+                :on-success="sucessUpload"
+                :on-error="errorUpload"
+                :before-upload="beforeUpload"
+            >
+              <el-button size="small" type="primary"> 点击上传 </el-button>
+            </el-upload>
+            <el-image :src="imageAction" v-show="flag"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-row>
         <el-col :span="24">
           <el-form-item>
@@ -99,6 +101,7 @@ import 'element-tiptap/lib/index.css'
 import { uploadRichImage } from 'https/images'
 import { addGame, getGame, updateGame } from '@/https/game'
 import { Message } from 'element-ui'
+import { ref } from 'vue'
 
 export default {
   name: 'PublishIndex',
@@ -171,7 +174,11 @@ export default {
         new FontSize(), // 字号
         new Preview(), // 预览
         new Fullscreen() // 全屏
-      ]
+      ],
+      picAction: ref(''),
+      imageAction: ref(''),
+      flag: ref(false),
+      fileName: ''
     }
   },
   components: {
@@ -260,6 +267,24 @@ export default {
     handleEmitUrl (event, index) {
       // 父组件接受返回的图片路径参数
       this.form.cover.images[index] = event
+    },
+    sucessUpload () {
+      this.$message({
+        message: '上传成功',
+        type: 'success'
+      })
+      this.flag.value = true
+      this.imageAction = `http://localhost:8080/images?path=/test/${this.fileName}`
+    },
+    errorUpload () {
+      this.$message({
+        message: '上传失败',
+        type: 'error'
+      })
+    },
+    beforeUpload (file) {
+      this.fileName = file.name
+      this.picAction = `http://localhost:8080/images?path=/test/${file.name}`
     }
   }
 }
