@@ -274,17 +274,17 @@ export default {
         type: 'success'
       })
       this.flag.value = true
-      this.imageAction = `http://localhost:8080/images?path=/test/${this.fileName}`
+      this.imageAction = `http://localhost:8080/images/test/${this.fileName}`
     },
     errorUpload () {
       this.$message({
-        message: '上传失败',
+        message: this.picAction,
         type: 'error'
       })
     },
     beforeUpload (file) {
       this.fileName = file.name
-      this.picAction = `http://localhost:8080/images?path=/test/${file.name}`
+      this.picAction = `http://localhost:8080/images/test/${file.name}`
     }
   }
 }
