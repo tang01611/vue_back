@@ -53,20 +53,32 @@
         :data="newsData">
         <el-table-column type="expand">
           <template slot-scope="props">
-            <el-form label-position="left" class="demo-table-expand">
-              <el-form-item label="商品 ID">
-                <span>{{ props.row.id }}</span>
-              </el-form-item>
-              <el-form-item label="名称">
-                <span>{{ props.row.gameName }}</span>
-              </el-form-item>
-              <el-form-item label="价格">
-                <span>{{ props.row.price }}</span>
-              </el-form-item>
-              <el-form-item label="">
-                <span>{{ props.row.content }}</span>
-              </el-form-item>
-            </el-form>
+            <div class="expanded-row">
+              <div class="expanded-row__item">
+                <span class="expanded-row__label">商品 ID:</span>
+                <span class="expanded-row__value">{{ props.row.id }}</span>
+              </div>
+              <div class="expanded-row__item">
+                <span class="expanded-row__label">likes:</span>
+                <span class="expanded-row__value">{{ props.row.likes }}</span>
+              </div>
+              <div class="expanded-row__item">
+                <span class="expanded-row__label">名称:</span>
+                <span class="expanded-row__value">{{ props.row.gameName }}</span>
+              </div>
+              <div class="expanded-row__item">
+                <span class="expanded-row__label">类型:</span>
+                <span class="expanded-row__value">{{ props.row.tags }}</span>
+              </div>
+              <div class="expanded-row__item">
+                <span class="expanded-row__label">价格:</span>
+                <span class="expanded-row__value">{{ props.row.price }}</span>
+              </div>
+              <div class="expanded-row__item expanded-row__item--full">
+                <span class="expanded-row__label">内容简介:</span>
+                <span class="expanded-row__value">{{ props.row.content }}</span>
+              </div>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="封面">
@@ -243,5 +255,28 @@ export default {
   margin-right: 0;
   margin-bottom: 0;
   width: 50%;
+}
+//后面是展开的布局
+.expanded-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.expanded-row__item {
+  flex: 0 0 50%; /* 每行显示两个项目 */
+  padding: 5px 10px;
+  box-sizing: border-box;
+}
+
+.expanded-row__item--full {
+  flex: 1 0 100%; /* 单独占一行并且占据整个宽度 */
+}
+
+.expanded-row__label {
+  font-weight: bold;
+}
+
+.expanded-row__value {
+  margin-left: 5px;
 }
 </style>
