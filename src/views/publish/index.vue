@@ -5,7 +5,7 @@
     <div slot="header" class="clearfix">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item to="/">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>{{ articleId ? '编辑' : '发布' }}文章</el-breadcrumb-item>
+        <el-breadcrumb-item>{{ articleId ? '保存' : '发布' }}文章</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <!-- /面包屑导航 -->
@@ -46,7 +46,13 @@
             >
               <el-button size="small" type="primary"> 点击上传 </el-button>
             </el-upload>
-            <el-image :src="imageAction" v-show="flag"/>
+<!--            <el-image :src="imageAction" v-show="flag"/>-->
+            <el-image
+              v-for="image in form.imageUrlList"
+              :key="image.id"
+              :src="image.imageUrl"
+              class="image-item"
+              fit="cover"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -107,7 +113,17 @@ export default {
   name: 'PublishIndex',
   data () {
     return {
-      form: {},
+      form: ref({
+        id: '',
+        gameName: '',
+        tags: '',
+        price: '',
+        content: '',
+        imageUrlList: [],
+        comments: [],
+        commentNumber: 0,
+        likes: 0
+      }),
       // 添加表单验证规则
       rules: {
         gameName: [
@@ -273,8 +289,18 @@ export default {
         message: '上传成功',
         type: 'success'
       })
-      this.flag.value = true
-      this.imageAction = `http://localhost:8080/images/test/${this.fileName}`
+      this.flag = true
+      this.imageAction = `http://localhost:8080/images?path=/test/${this.fileName}`
+      const img = {
+        imageUrl: this.imageAction,
+        id: this.fileName
+      }
+      this.form.imageUrlList.push(img)
+      console.log(this.form.imageUrlList)
+      Message({
+        message: img.id,
+        type: 'success'
+      })
     },
     errorUpload () {
       this.$message({

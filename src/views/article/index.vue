@@ -86,7 +86,7 @@
             <el-image
               class="item-image"
               style="width: 100px;"
-              :src="scope.row.imageUrlList[0]"
+              :src="scope.row.imageUrlList[0].imageUrl"
               fit="cover" />
           </template>
         </el-table-column>
