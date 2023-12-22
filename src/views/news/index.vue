@@ -55,14 +55,14 @@
             <el-image
               class="item-image"
               style="width: 100px;"
-              :src="scope.row.cover.images[0]"
+              :src="scope.row.newsImg.imageUrl"
               fit="cover" />
           </template>
         </el-table-column>
-        <el-table-column prop="title" label="标题" />
-        <el-table-column prop="title" label="类型" />
-        <el-table-column prop="title" label="介绍" />
-        <el-table-column label="状态">
+        <el-table-column prop="newsName" label="标题" />
+        <el-table-column prop="notes" label="类型" />
+        <el-table-column prop="data" label="介绍" />
+<!--        <el-table-column label="状态">-->
           <!-- <template slot-scope="scope">
             <el-tag type="info" v-if="scope.row.status === 0">草稿</el-tag>
             <el-tag v-else-if="scope.row.status === 1">待审核</el-tag>
@@ -70,11 +70,11 @@
             <el-tag type="warning" v-else-if="scope.row.status === 3">审核失败</el-tag>
             <el-tag type="danger" v-else-if="scope.row.status === 4">已删除</el-tag>
           </template> -->
-          <template slot-scope="scope">
-            <el-tag :type="newsStatus[scope.row.status].type">{{ newsStatus[scope.row.status].text }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="pubdate" label="发布时间" />
+<!--          <template slot-scope="scope">-->
+<!--            <el-tag :type="newsStatus[scope.row.status].type">{{ newsStatus[scope.row.status].text }}</el-tag>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+        <el-table-column prop="data" label="发布时间" />
         <el-table-column label="操作" width="150px">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" icon="el-icon-edit" circle @click="handleEdit(scope.row.id)"></el-button>
@@ -100,6 +100,7 @@
 
 <script>
 import { delectArticle, getArticles } from '@/https/article'
+import { ref } from 'vue'
 
 export default {
   name: 'NewsIndex',
@@ -140,17 +141,7 @@ export default {
           return time.getTime() > Date.now() // 可选历史天、可选当前天、不可选未来天
         }
       },
-      newsData: [
-        {
-          id: 1,
-          title: '标题',
-          cover: {
-            images: ['https://img.yzcdn.cn/vant/cat.jpeg', 'https://img.yzcdn.cn/vant/cat.jpeg']
-          },
-          status: 0,
-          pubdate: '2020-01-01'
-        }
-      ],
+      newsData: ref([]),
       page: 1, // 当前页码
       pageSize: 20, // 每页请求条数
       totalCount: 1, // 总条数
@@ -167,12 +158,12 @@ export default {
     loadArticles (page = 1) {
       // const { channel, date, status } = this.form
       // TODO 这里之后要修改
-      this.isLoading = false
+      this.isLoading = true
       getArticles().then(res => {
-        const { data: { data: { results, total_count: totalCount } }, status } = res
+        const { data, status } = res
         if (status === 200) {
-          this.newsData = results
-          this.totalCount = totalCount
+          this.newsData = data
+          this.totalCount = data.length
           this.isLoading = false
         }
       })

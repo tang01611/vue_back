@@ -34,7 +34,7 @@ export function deleteGame (gameId) {
 export function addGame (game) {
   return request({
     method: 'POST',
-    url: '/api/games/create',
+    url: '/api/games',
     // params: {
     //   draft
     // },

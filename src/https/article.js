@@ -6,7 +6,7 @@
 // 删除新闻
 // 新增新闻
 // 获取新闻详情 getById
-import { request } from './request'
+import request from './request'
 
 // 获取新闻列表
 // 无参数，返回文章列表数据

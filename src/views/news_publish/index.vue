@@ -11,19 +11,32 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="60px">
       <el-row :gutter="20">
         <el-col :span="8">
-          <el-form-item label="标题" prop="title">
-            <el-input v-model="form.title"></el-input>
+          <el-form-item label="标题" prop="newsName">
+            <el-input v-model="form.newsName"></el-input>
           </el-form-item>
-          <el-form-item label="类别" prop="category">
-            <el-input v-model="form.category"></el-input>
+          <el-form-item label="类别" prop="notes">
+            <el-input v-model="form.notes"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="频道" prop="channel_id">
-            <el-select v-model="form.channel_id" placeholder="请选择频道">
-              <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
+          <el-form-item label="作者" prop="author">
+            <el-input v-model="form.author"></el-input>
           </el-form-item>
+          <el-form-item label="日期" class="picker-time">
+            <el-date-picker
+              v-model="form.data"
+              type="date"
+              placeholder="选择日期"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
+               />
+          </el-form-item>
+
+          <!--          <el-form-item label="频道" prop="channel_id">-->
+<!--            <el-select v-model="form.channel_id" placeholder="请选择频道">-->
+<!--              <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id" />-->
+<!--            </el-select>-->
+<!--          </el-form-item>-->
         </el-col>
       </el-row>
       <el-row>
@@ -35,17 +48,19 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="封面">
-            <el-radio-group v-model="form.cover.type">
-              <el-radio :label="1">单图</el-radio>
-              <el-radio :label="3">三图</el-radio>
-              <el-radio :label="0">无图</el-radio>
-              <el-radio :label="-1">自动</el-radio>
-            </el-radio-group>
-            <template v-if="form.cover.type > 0">
-              <!-- <upload-cover v-for="(item, index) in form.cover.type" :key="index" :current-cover="form.cover.images[index]" @handleEmitUrl="handleEmitUrl($event, index)" /> -->
-              <upload-cover v-for="(item, index) in form.cover.type" :key="index" v-model="form.cover.images[index]" />
-            </template>
+          <el-form-item>
+            <el-upload
+              :action="picAction"
+              :limit="10"
+              list-type="picture-card"
+              accept=".png, .jpg"
+              :on-success="sucessUpload"
+              :on-error="errorUpload"
+              :before-upload="beforeUpload"
+            >
+              <el-button size="small" type="primary"> 点击上传 </el-button>
+            </el-upload>
+            <el-image :src="this.form.newsImg.imageUrl" v-show="flag"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -94,25 +109,32 @@ import {
 } from 'element-tiptap'
 // import element-tiptap 样式
 import 'element-tiptap/lib/index.css'
-import UploadCover from './components/UploadCover'
+// import UploadCover from './components/UploadCover'
 
-import { getChannels, addArticle, getArticle, updateArticle } from 'https/article'
+// import { getChannels, addArticle, getArticle, updateArticle } from 'https/article'
 import { uploadRichImage } from 'https/images'
+import { ref } from 'vue'
+import { addArticle, getArticle, updateArticle } from '@/https/article'
+import { Message } from 'element-ui'
 export default {
   name: 'News_publishIndex',
   data () {
     return {
-      form: {
-        channel_id: null,
-        content: '',
-        cover: {
-          images: [],
-          type: 1
+      form: ref({
+        id: null,
+        author: '',
+        newsImg: {
+          id: null,
+          imageUrl: ''
         },
-        title: '',
-        category: null,
-        price: 0.0
-      },
+        newsName: '',
+        notes: '',
+        evaluate: '',
+        views: '',
+        data: '',
+        content: '',
+        comments: []
+      }),
       // 添加表单验证规则
       rules: {
         title: [
@@ -182,15 +204,19 @@ export default {
         new FontSize(), // 字号
         new Preview(), // 预览
         new Fullscreen() // 全屏
-      ]
+      ],
+      picAction: ref(''),
+      imageAction: ref(''),
+      flag: ref(false),
+      fileName: ''
     }
   },
   components: {
-    'el-tiptap': ElementTiptap,
-    UploadCover
+    'el-tiptap': ElementTiptap
+    // UploadCover
   },
   created () {
-    this.loadChannels()
+    // this.loadChannels()
     const { articleId } = this.$route.query
     if (articleId) {
       this.articleId = articleId
@@ -199,15 +225,6 @@ export default {
     }
   },
   methods: {
-    // 获取频道列表
-    loadChannels () {
-      getChannels().then(res => {
-        const { data: { data: { channels } }, status } = res
-        if (status === 200) {
-          this.channels = channels
-        }
-      })
-    },
     // 发布文章
     handleOnPublish (draft) {
       this.$refs.form.validate(valid => {
@@ -218,15 +235,15 @@ export default {
         // 表单验证通过
         if (this.articleId) {
           // 编辑/更新文章
-          updateArticle(this.articleId, this.form, draft).then(res => {
+          updateArticle(this.articleId, this.form).then(res => {
             const { status } = res
-            if (status === 201) {
+            if (status === 200) {
               this.baseMethod()
             }
           })
         } else {
           // 新增文章
-          addArticle(this.form, draft).then(res => {
+          addArticle(this.form).then(res => {
             const { status } = res
             if (status === 201) {
               this.baseMethod()
@@ -238,9 +255,9 @@ export default {
     // 编辑文章-对文章进行赋值
     editData () {
       getArticle(this.articleId).then(res => {
-        const { data: { data: { channel_id: channelId, content, cover, id, title } }, status } = res
+        const { data, status } = res
         if (status === 200) {
-          this.form = Object.assign({}, { channel_id: channelId, content, cover, id: id.toString(), title })
+          this.form = data
         }
       })
     },
@@ -258,6 +275,34 @@ export default {
     handleEmitUrl (event, index) {
       // 父组件接受返回的图片路径参数
       this.form.cover.images[index] = event
+    },
+    sucessUpload () {
+      this.$message({
+        message: '上传成功',
+        type: 'success'
+      })
+      this.flag = true
+      this.imageAction = `http://localhost:8080/images?path=/test/${this.fileName}`
+      const img = {
+        imageUrl: this.imageAction,
+        id: this.fileName
+      }
+      this.form.newsImg = img
+      console.log(this.form.imageUrlList)
+      Message({
+        message: img.id,
+        type: 'success'
+      })
+    },
+    errorUpload () {
+      this.$message({
+        message: this.picAction,
+        type: 'error'
+      })
+    },
+    beforeUpload (file) {
+      this.fileName = file.name
+      this.picAction = `http://localhost:8080/images/test/${file.name}`
     }
   }
 }

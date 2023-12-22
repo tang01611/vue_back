@@ -16,7 +16,7 @@
             <el-input v-model="form.gameName"></el-input>
           </el-form-item>
           <el-form-item label="标签" prop="tags">
-            <el-input v-model="form.tags"></el-input>
+            <el-input v-model="tagsString"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -114,9 +114,9 @@ export default {
   data () {
     return {
       form: ref({
-        id: '',
+        id: null,
         gameName: '',
-        tags: '',
+        tags: [],
         price: '',
         content: '',
         imageUrlList: [],
@@ -194,7 +194,8 @@ export default {
       picAction: ref(''),
       imageAction: ref(''),
       flag: ref(false),
-      fileName: ''
+      fileName: '',
+      tagsString: ''
     }
   },
   components: {
@@ -222,6 +223,8 @@ export default {
     // },
     // 发布文章
     handleOnPublish (draft) {
+      this.form.tags = this.tagsString.split(',').map(tag => tag.trim())
+      this.form.price = '￥' + this.form.price
       this.$refs.form.validate(valid => {
         if (!valid) {
           // 表单验证未通过
@@ -266,6 +269,7 @@ export default {
           // this.form.price = data.price
           // this.form.content = data.content
           this.form = data
+          this.tagsString = data.tags.join(',')
         }
       })
     },
