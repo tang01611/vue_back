@@ -28,7 +28,7 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="内容" prop="content">
-            <el-tiptap placeholder="请输入内容" :width="1400" :height="400" lang="zh" v-model="form.content" :extensions="extensions" />
+            <el-input type="textarea" v-model="form.content" :autosize="{ minRows: 10, maxRows: 20 }"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -69,42 +69,13 @@
 </template>
 
 <script>
-import {
-  ElementTiptap,
-  Doc,
-  Text,
-  Paragraph,
-  Heading,
-  Bold,
-  Italic,
-  Strike,
-  Underline,
-  Image,
-  CodeBlock,
-  Blockquote,
-  ListItem,
-  BulletList,
-  OrderedList,
-  TodoItem,
-  TodoList,
-  TextAlign,
-  Indent,
-  LineHeight,
-  Table,
-  TableHeader,
-  TableCell,
-  TableRow,
-  TextColor,
-  Preview,
-  Fullscreen,
-  FontSize
-} from 'element-tiptap'
+
 // import element-tiptap 样式
 import 'element-tiptap/lib/index.css'
 // import UploadCover from './components/UploadCover'
 
 // import { getChannels, addArticle, getArticle, updateArticle } from 'https/article'
-import { uploadRichImage } from 'https/images'
+// import { uploadRichImage } from 'https/images'
 import { addGame, getGame, updateGame } from '@/https/game'
 import { Message } from 'element-ui'
 import { ref } from 'vue'
@@ -148,49 +119,6 @@ export default {
       channels: [],
       articleId: '', // 编辑时存储当前文章的id
       // 编辑器的 extensions(它们将会按照你声明的顺序被添加到菜单栏和气泡菜单中)
-      extensions: [
-        new Doc(),
-        new Text(),
-        new Paragraph(),
-        new Heading({ level: 5 }), // 标题
-        new Bold({ bubble: true }), // 粗体
-        new Italic(), // 斜体
-        new Strike(), // 删除线
-        new Underline({ bubble: true, menubar: false }), // 在气泡菜单而不在菜单栏中渲染菜单按钮
-        new Image({
-          uploadRequest (file) {
-            /**
-             * 一般文件上传的接口都要求把请求头中的 Content-Type 设置为 multipart/form-data，但是我们使用 axios 上传文件的话不需要手动设置，你只要给 data 一个 new FormData() 对象即可。
-             */
-            const fd = new FormData()
-            fd.append('image', file)
-            return uploadRichImage(fd).then(res => {
-              const { data: { data: { url } }, status } = res
-              if (status === 201) {
-                return url
-              }
-            })
-          }
-        }), // 插入图片
-        new CodeBlock(), // 代码块
-        new Blockquote(), // 引用
-        new ListItem(),
-        new BulletList(), // 无序列表
-        new OrderedList(), // 有序列表
-        new TodoItem(),
-        new TodoList(), // 类似TodoList
-        new TextAlign(),
-        new Indent(),
-        new LineHeight(),
-        new Table(),
-        new TableHeader(),
-        new TableCell(),
-        new TableRow(),
-        new TextColor(), // 字体颜色
-        new FontSize(), // 字号
-        new Preview(), // 预览
-        new Fullscreen() // 全屏
-      ],
       picAction: ref(''),
       imageAction: ref(''),
       flag: ref(false),
@@ -199,7 +127,7 @@ export default {
     }
   },
   components: {
-    'el-tiptap': ElementTiptap
+    // 'el-tiptap': ElementTiptap
     // UploadCover
   },
   created () {
