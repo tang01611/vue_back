@@ -60,7 +60,12 @@
             >
               <el-button size="small" type="primary"> 点击上传 </el-button>
             </el-upload>
-            <el-image :src="this.form.newsImg.imageUrl"/>
+            <div v-if="form.newsImg && form.newsImg.imageUrl">
+              <el-image :src="this.form.newsImg.imageUrl"/>
+            </div>
+            <div v-else>
+              暂无图片，快去上传图片吧
+            </div>
           </el-form-item>
         </el-col>
       </el-row>
@@ -85,7 +90,7 @@ import 'element-tiptap/lib/index.css'
 // import { getChannels, addArticle, getArticle, updateArticle } from 'https/article'
 
 import { ref } from 'vue'
-import { addArticle, getArticle, updateArticle } from '@/https/article'
+import { addArticle, getArticle, getArticles, updateArticle } from '@/https/article'
 import { Message } from 'element-ui'
 export default {
   name: 'News_publishIndex',
@@ -136,7 +141,8 @@ export default {
       picAction: ref(''),
       imageAction: ref(''),
       flag: ref(false),
-      fileName: ''
+      fileName: '',
+      NewsListLength: 0
     }
   },
   created () {
@@ -147,8 +153,18 @@ export default {
       // 获取编辑的数据
       this.editData()
     }
+    this.loadLength()
   },
   methods: {
+    loadLength () {
+      getArticles().then(res => {
+        const { data, status } = res
+        if (status === 200) {
+          this.NewsListLength = data.length
+          this.picAction = `http://localhost:8080/images/test/news${this.NewsListLength + 1}.jpg`
+        }
+      })
+    },
     // 发布文章
     handleOnPublish (draft) {
       this.$refs.form.validate(valid => {
@@ -206,7 +222,7 @@ export default {
         type: 'success'
       })
       this.flag = true
-      this.imageAction = `http://localhost:8080/images?path=/test/${this.fileName}`
+      this.imageAction = `http://localhost:8080/images?path=/test/news${this.NewsListLength + 1}.jpg`
       const img = {
         imageUrl: this.imageAction,
         id: this.fileName
@@ -223,10 +239,14 @@ export default {
         message: this.picAction,
         type: 'error'
       })
+      console.log('ERR pic:' + this.picAction)
+      console.log('ERR image:' + this.imageAction)
     },
     beforeUpload (file) {
       this.fileName = file.name
       this.picAction = `http://localhost:8080/images/test/${file.name}`
+      console.log('pic:' + this.picAction)
+      console.log('image:' + this.imageAction)
     }
   }
 }

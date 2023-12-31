@@ -6,11 +6,11 @@ import VueRouter from 'vue-router'
 
 const Article = () => import('views/article/')
 const Comment = () => import('views/comment/')
-const Fans = () => import('views/fans/')
+
 const Home = () => import('views/home/')
 const Layout = () => import('views/layout/')
 const Login = () => import('views/login/')
-const Material = () => import('views/material/')
+
 const Publish = () => import('views/publish/')
 const Setting = () => import('views/setting/')
 
@@ -41,21 +41,21 @@ const routes = [
         name: Comment,
         component: Comment
       },
-      {
-        path: '/fans',
-        name: Fans,
-        component: Fans
-      },
+      // {
+      //   path: '/fans',
+      //   name: Fans,
+      //   component: Fans
+      // },
       {
         path: '/',
         name: Home,
         component: Home
       },
-      {
-        path: '/material',
-        name: Material,
-        component: Material
-      },
+      // {
+      //   path: '/material',
+      //   name: Material,
+      //   component: Material
+      // },
       {
         path: '/publish',
         name: Publish,

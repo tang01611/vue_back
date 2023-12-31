@@ -47,12 +47,17 @@
               <el-button size="small" type="primary"> 点击上传 </el-button>
             </el-upload>
 <!--            <el-image :src="imageAction" v-show="flag"/>-->
-            <el-image
-              v-for="image in form.imageUrlList"
-              :key="image.id"
-              :src="image.imageUrl"
-              class="image-item"
-              fit="cover"/>
+            <div v-if="form.imageUrlList && form.imageUrlList.length > 0">
+              <el-image
+                  v-for="image in form.imageUrlList"
+                  :key="image.id"
+                  :src="image.imageUrl"
+                  class="image-item"
+                  fit="cover"/>
+            </div>
+            <div v-else>
+              暂无图片，快去上传图片吧
+            </div>
           </el-form-item>
         </el-col>
       </el-row>
@@ -76,7 +81,7 @@ import 'element-tiptap/lib/index.css'
 
 // import { getChannels, addArticle, getArticle, updateArticle } from 'https/article'
 // import { uploadRichImage } from 'https/images'
-import { addGame, getGame, updateGame } from '@/https/game'
+import { addGame, getGame, getGames, updateGame } from '@/https/game'
 import { Message } from 'element-ui'
 import { ref } from 'vue'
 
@@ -123,12 +128,11 @@ export default {
       imageAction: ref(''),
       flag: ref(false),
       fileName: '',
-      tagsString: ''
+      tagsString: '',
+      GamesListLength: 0,
+      imageNum: 0,
+      imageid: 0
     }
-  },
-  components: {
-    // 'el-tiptap': ElementTiptap
-    // UploadCover
   },
   created () {
     // this.loadChannels()
@@ -138,17 +142,18 @@ export default {
       // 获取编辑的数据
       this.editData()
     }
+    this.loadLength()
   },
   methods: {
-    // // 获取频道列表
-    // loadChannels () {
-    //   getChannels().then(res => {
-    //     const { data: { data: { channels } }, status } = res
-    //     if (status === 200) {
-    //       this.channels = channels
-    //     }
-    //   })
-    // },
+    loadLength () {
+      getGames().then(res => {
+        const { data, status } = res
+        if (status === 200) {
+          this.GamesListLength = data.length
+          this.picAction = `http://localhost:8080/images/test/game${this.GamesListLength * 5 + this.imageNum + this.imageid + 1}.png`
+        }
+      })
+    },
     // 发布文章
     handleOnPublish (draft) {
       this.form.tags = this.tagsString.split(',').map(tag => tag.trim())
@@ -222,12 +227,14 @@ export default {
         type: 'success'
       })
       this.flag = true
-      this.imageAction = `http://localhost:8080/images?path=/test/${this.fileName}`
+      this.imageAction = `http://localhost:8080/images?path=/test/game${this.GamesListLength * 5 + this.imageNum + this.imageid + 1}.png`
       const img = {
         imageUrl: this.imageAction,
         id: this.fileName
       }
       this.form.imageUrlList.push(img)
+      this.imageid++
+      this.picAction = `http://localhost:8080/images/test/game${this.GamesListLength * 5 + this.imageNum + this.imageid + 1}.png`
       console.log(this.form.imageUrlList)
       Message({
         message: img.id,
