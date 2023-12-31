@@ -143,13 +143,13 @@ export default {
   },
   created () {
     // this.loadChannels()
+    this.loadLength()
     const { articleId } = this.$route.query
     if (articleId) {
       this.articleId = articleId
       // 获取编辑的数据
       this.editData()
     }
-    this.loadLength()
   },
   methods: {
     loadLength () {
@@ -212,6 +212,7 @@ export default {
           // this.form.content = data.content
           this.form = data
           this.tagsString = data.tags.join(',')
+          this.imageNum = this.form.imageUrlList.length
         }
       })
     },

@@ -86,7 +86,7 @@
             <el-image
               class="item-image"
               style="width: 100px;"
-              :src="scope.row.imageUrlList[0].imageUrl"
+              :src="scope.row.imageUrlList && scope.row.imageUrlList.length > 0 ? scope.row.imageUrlList[0].imageUrl : 'https://img.yzcdn.cn/vant/cat.jpeg'"
               fit="cover" />
           </template>
         </el-table-column>
