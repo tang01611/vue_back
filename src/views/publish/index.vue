@@ -72,7 +72,7 @@
         <el-col :span="24">
           <el-form-item>
             <el-button type="primary" @click="handleOnPublish(false)">{{ articleId ? '编辑' : '发布' }}</el-button>
-            <el-button @click="handleOnPublish(true)" v-if="!articleId">存入草稿</el-button>
+<!--            <el-button @click="handleOnPublish(true)" v-if="!articleId">存入草稿</el-button>-->
           </el-form-item>
         </el-col>
       </el-row>
