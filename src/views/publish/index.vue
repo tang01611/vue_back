@@ -48,12 +48,19 @@
             </el-upload>
 <!--            <el-image :src="imageAction" v-show="flag"/>-->
             <div v-if="form.imageUrlList && form.imageUrlList.length > 0">
-              <el-image
-                  v-for="image in form.imageUrlList"
-                  :key="image.id"
-                  :src="image.imageUrl"
-                  class="image-item"
-                  fit="cover"/>
+              <div v-for="image in form.imageUrlList" :key="image.id" class="image-container">
+                <el-image
+                    :src="image.imageUrl"
+                    class="image-item"
+                    fit="cover"
+                ></el-image>
+                <el-button
+                    type="danger"
+                    icon="el-icon-delete"
+                    class="delete-image-button"
+                    @click="removeImage(image.id)"
+                >删除</el-button>
+              </div>
             </div>
             <div v-else>
               暂无图片，快去上传图片吧
@@ -157,7 +164,9 @@ export default {
     // 发布文章
     handleOnPublish (draft) {
       this.form.tags = this.tagsString.split(',').map(tag => tag.trim())
-      this.form.price = '￥' + this.form.price
+      if (!this.form.price.startsWith('￥')) {
+        this.form.price = '￥' + this.form.price
+      }
       this.$refs.form.validate(valid => {
         if (!valid) {
           // 表单验证未通过
@@ -169,10 +178,10 @@ export default {
           updateGame(this.articleId, this.form).then(res => {
             const { status } = res
             Message({
-              message: status,
+              message: '编辑成功!',
               type: 'success'
             })
-            if (status === 201) {
+            if (status === 200) {
               this.baseMethod()
             }
           })
@@ -250,7 +259,11 @@ export default {
     beforeUpload (file) {
       this.fileName = file.name
       this.picAction = `http://localhost:8080/images/test/${file.name}`
+    },
+    removeImage (imageId) {
+      this.form.imageUrlList = this.form.imageUrlList.filter(image => image.id !== imageId)
     }
+
   }
 }
 </script>
@@ -265,5 +278,16 @@ export default {
     display: flex;
     align-items: center;
     width: 600px;
+  }
+  .image-container {
+    position: relative;
+    display: inline-block; /* 或者 flex, 根据你的布局需求 */
+    margin: 10px;
+  }
+  .delete-image-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    /* 其他样式，根据需要调整 */
   }
 </style>

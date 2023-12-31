@@ -60,8 +60,14 @@
             >
               <el-button size="small" type="primary"> 点击上传 </el-button>
             </el-upload>
-            <div v-if="form.newsImg && form.newsImg.imageUrl">
+            <div v-if="form.newsImg && form.newsImg.imageUrl" class="image-container">
               <el-image :src="this.form.newsImg.imageUrl"/>
+              <el-button
+                  type="danger"
+                  icon="el-icon-delete"
+                  class="delete-image-button"
+                  @click="removeImage()"
+              >删除</el-button>
             </div>
             <div v-else>
               暂无图片，快去上传图片吧
@@ -247,11 +253,25 @@ export default {
       this.picAction = `http://localhost:8080/images/test/${file.name}`
       console.log('pic:' + this.picAction)
       console.log('image:' + this.imageAction)
+    },
+    removeImage (imageId) {
+      this.form.newsImg.id = null
+      this.form.newsImg.imageUrl = ''
     }
   }
 }
 </script>
 
 <style scoped>
-
+.image-container {
+  position: relative;
+  display: inline-block; /* 或者 flex, 根据你的布局需求 */
+  margin: 10px;
+}
+.delete-image-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  /* 其他样式，根据需要调整 */
+}
 </style>
