@@ -94,7 +94,7 @@
         </el-table-column>
         <el-table-column prop="newsName" label="标题" />
         <el-table-column prop="notes" label="类型" />
-        <el-table-column prop="data" label="介绍" />
+<!--        <el-table-column prop="views" label="浏览数" />-->
 <!--        <el-table-column label="状态">-->
           <!-- <template slot-scope="scope">
             <el-tag type="info" v-if="scope.row.status === 0">草稿</el-tag>
