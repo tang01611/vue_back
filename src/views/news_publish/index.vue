@@ -15,7 +15,7 @@
             <el-input v-model="form.newsName"></el-input>
           </el-form-item>
           <el-form-item label="类别" prop="notes">
-            <el-input v-model="form.notes"></el-input>
+            <el-input v-model="form.notes" placeholder="请输入标签,以逗号隔开"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -31,12 +31,6 @@
               value-format="yyyy-MM-dd"
                />
           </el-form-item>
-
-          <!--          <el-form-item label="频道" prop="channel_id">-->
-<!--            <el-select v-model="form.channel_id" placeholder="请选择频道">-->
-<!--              <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id" />-->
-<!--            </el-select>-->
-<!--          </el-form-item>-->
         </el-col>
       </el-row>
       <el-row>
@@ -51,7 +45,7 @@
           <el-form-item>
             <el-upload
               :action="picAction"
-              :limit="10"
+              :limit="1"
               list-type="picture-card"
               accept=".png, .jpg"
               :on-success="sucessUpload"
@@ -61,7 +55,7 @@
               <el-button size="small" type="primary"> 点击上传 </el-button>
             </el-upload>
             <div v-if="form.newsImg && form.newsImg.imageUrl" class="image-container">
-              <el-image :src="this.form.newsImg.imageUrl"/>
+              <el-image :src="this.form.newsImg.imageUrl" class="image-item" fit="cover"/>
               <el-button
                   type="danger"
                   icon="el-icon-delete"
@@ -78,7 +72,7 @@
       <el-row>
         <el-col :span="24">
           <el-form-item>
-            <el-button type="primary" @click="handleOnPublish(false)">{{ articleId ? '编辑' : '发布' }}</el-button>
+            <el-button type="primary" @click="handleOnPublish(false)">{{ articleId ? '保存' : '发布' }}</el-button>
 <!--            <el-button @click="handleOnPublish(true)" v-if="!articleId">存入草稿</el-button>-->
           </el-form-item>
         </el-col>
@@ -274,4 +268,10 @@ export default {
   right: 0;
   /* 其他样式，根据需要调整 */
 }
+.image-item {
+  width: 150px;
+  height: 150px;
+//margin-right: 15px;
+}
+
 </style>

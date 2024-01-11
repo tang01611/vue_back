@@ -16,7 +16,7 @@
             <el-input v-model="form.gameName"></el-input>
           </el-form-item>
           <el-form-item label="标签" prop="tags">
-            <el-input v-model="tagsString"></el-input>
+            <el-input v-model="tagsString" placeholder="请输入标签,以逗号隔开"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -71,7 +71,7 @@
       <el-row>
         <el-col :span="24">
           <el-form-item>
-            <el-button type="primary" @click="handleOnPublish(false)">{{ articleId ? '编辑' : '发布' }}</el-button>
+            <el-button type="primary" @click="handleOnPublish(false)">{{ articleId ? '保存' : '发布' }}</el-button>
 <!--            <el-button @click="handleOnPublish(true)" v-if="!articleId">存入草稿</el-button>-->
           </el-form-item>
         </el-col>
@@ -290,5 +290,11 @@ export default {
     top: 0;
     right: 0;
     /* 其他样式，根据需要调整 */
+  }
+
+  .image-item {
+    width: 150px;
+    height: 150px;
+    //margin-right: 15px;
   }
 </style>

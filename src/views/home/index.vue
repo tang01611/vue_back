@@ -12,7 +12,7 @@
           </div>
           <div class="user-info-list">
             上次登录时间：
-            <span>2022-10-01</span>
+            <span>2024-1-10</span>
           </div>
           <div class="user-info-list">
             上次登录地点：
@@ -22,17 +22,17 @@
         <el-card shadow="hover" style="height: 252px">
           <template #header>
             <div class="clearfix">
-              <span>语言详情</span>
+              <span>社区详细</span>
             </div>
           </template>
-          Vue
-          <el-progress :percentage="79.4" color="#42b983"></el-progress>
-          TypeScript
-          <el-progress :percentage="14" color="#f1e05a"></el-progress>
-          CSS
-          <el-progress :percentage="5.6"></el-progress>
-          HTML
-          <el-progress :percentage="1" color="#f56c6c"></el-progress>
+          新闻
+          <el-progress :percentage="25" color="#42b983"></el-progress>
+          商城
+          <el-progress :percentage="25" color="#f1e05a"></el-progress>
+          游戏
+          <el-progress :percentage="25"></el-progress>
+          论坛
+          <el-progress :percentage="25" color="#f56c6c"></el-progress>
         </el-card>
       </el-col>
       <el-col :span="16">

@@ -10,33 +10,33 @@
         </el-breadcrumb>
       </div>
       <!-- /面包屑导航 -->
-      <el-form :inline="true" :model="form" size="small" class="demo-form-inline">
-        <el-form-item label="状态">
-          <el-select clearable v-model="form.status" placeholder="状态">
-            <el-option label="全部" :value="null" />
-            <el-option v-for="item in newsStatus" :key="item.status" :label="item.text" :value="item.status" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="频道">
-          <el-select clearable v-model="form.channel" placeholder="频道">
-            <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="日期" class="picker-time">
-          <el-date-picker
-            v-model="form.date"
-            type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
-            :picker-options="setDisabled" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" :disabled="isLoading" @click="handleQuery">查询</el-button>
-        </el-form-item>
-      </el-form>
+<!--      <el-form :inline="true" :model="form" size="small" class="demo-form-inline">-->
+<!--        <el-form-item label="状态">-->
+<!--          <el-select clearable v-model="form.status" placeholder="状态">-->
+<!--            <el-option label="全部" :value="null" />-->
+<!--            <el-option v-for="item in newsStatus" :key="item.status" :label="item.text" :value="item.status" />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="频道">-->
+<!--          <el-select clearable v-model="form.channel" placeholder="频道">-->
+<!--            <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id" />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="日期" class="picker-time">-->
+<!--          <el-date-picker-->
+<!--            v-model="form.date"-->
+<!--            type="datetimerange"-->
+<!--            range-separator="至"-->
+<!--            start-placeholder="开始日期"-->
+<!--            end-placeholder="结束日期"-->
+<!--            format="yyyy-MM-dd"-->
+<!--            value-format="yyyy-MM-dd"-->
+<!--            :picker-options="setDisabled" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item>-->
+<!--          <el-button type="primary" :disabled="isLoading" @click="handleQuery">查询</el-button>-->
+<!--        </el-form-item>-->
+<!--      </el-form>-->
     </el-card>
     <!-- /筛选区域 -->
     <!-- table表格 -->
@@ -50,6 +50,39 @@
         :cell-style="{'text-align':'center'}"
         v-loading="isLoading"
         :data="newsData">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <h2 class="expanded-row_title">详细信息</h2>
+            <div class="expanded-row">
+              <div class="expanded-row__item">
+                <span class="expanded-row__label">新闻 ID: </span>
+                <span class="expanded-row__value">{{ props.row.id }}</span>
+              </div>
+              <div class="expanded-row__item">
+                <span class="expanded-row__label">作者: </span>
+                <span class="expanded-row__value"><el-tag>{{ props.row.author }}</el-tag></span>
+              </div>
+              <div class="expanded-row__item">
+                <span class="expanded-row__label">名称: </span>
+                <span class="expanded-row__value">{{ props.row.newsName }}</span>
+              </div>
+<!--              <div class="expanded-row__item">-->
+<!--                <span class="expanded-row__label">类型:</span>-->
+<!--                <span class="expanded-row__value">-->
+<!--                  <el-tag v-for="tag in props.row.notes" :key="tag">{{ tag }}</el-tag>-->
+<!--                </span>-->
+<!--              </div>-->
+<!--              <div class="expanded-row__item">-->
+<!--                <span class="expanded-row__label">价格:</span>-->
+<!--                <span class="expanded-row__value"><el-tag>{{ props.row.price }}</el-tag></span>-->
+<!--              </div>-->
+              <div class="expanded-row__item expanded-row__item--full">
+                <span class="expanded-row__label">内容简介: </span>
+                <div class="expanded-row__value">{{ props.row.content }}</div>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="封面">
           <template slot-scope="scope">
             <el-image
@@ -223,4 +256,37 @@ export default {
       /*}*/
     }
   }
+  .expanded-row__item {
+    display: inline-block;
+    margin-right: 18px;
+  }
+  .expanded-row__item{
+    font-size: 15px;
+    margin-left: 10px;
+  }
+  .expanded-row_title{
+    margin-left: 10px;
+  }
+  .expanded-row__label {
+    font-weight: bold;
+  }
+  .expanded-row__item--full {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+
+  .expanded-row__item--full .expanded-row__value{
+    margin-top: 10px;
+    line-height: 2;
+  }
+  /*.expanded-row__item {*/
+  /*  flex: 0 0 33%; !* 每行显示两个项目 *!*/
+  /*  padding: 5px 10px;*/
+  /*  box-sizing: border-box;*/
+  /*  font-size: 15px;*/
+  /*}*/
+  /*.expanded-row__item--full {*/
+  /*  flex: 1 0 100%; !* 单独占一行并且占据整个宽度 *!*/
+  /*}*/
 </style>
